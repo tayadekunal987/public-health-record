@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+
+{% block title %}Home - Public Health Record System{% endblock %}
+
+{% block content %}
+<div class="jumbotron text-center mt-5">
+    <h1 class="display-4">Welcome to the Public Health Record System</h1>
+    <p class="lead">Efficiently manage your health records and appointments.</p>
+    <hr class="my-4">
+    {% if not current_user.is_authenticated %}
+    <p>Register or Login to access the system.</p>
+    <a class="btn btn-primary btn-lg" href="{{ url_for('register') }}" role="button">Register</a>
+    <a class="btn btn-success btn-lg" href="{{ url_for('login') }}" role="button">Login</a>
+    {% else %}
+    <p>Go to your dashboard to manage appointments.</p>
+    <a class="btn btn-primary btn-lg" href="{{ url_for('dashboard') }}" role="button">Dashboard</a>
+    {% endif %}
+</div>
+{% endblock %}

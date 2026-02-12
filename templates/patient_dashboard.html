@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+
+{% block title %}Patient Dashboard - Public Health Record System{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-12">
+        <h2>Welcome, {{ current_user.name }}</h2>
+        <hr>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="card text-center">
+            <div class="card-body">
+                <h5 class="card-title">Manage Your Appointments</h5>
+                <p class="card-text">Book new appointments and view the status of existing ones.</p>
+                <a href="{{ url_for('appointments') }}" class="btn btn-primary">Go to Appointments</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

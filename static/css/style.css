@@ -1,0 +1,111 @@
+:root {
+    --primary-color: #008080; /* Teal */
+    --secondary-color: #20c997; /* Light Teal */
+    --accent-color: #0d6efd; /* Bootstrap Blue */
+    --background-color: #f0f8ff; /* AliceBlue */
+    --text-color: #333;
+    --white: #ffffff;
+}
+
+body {
+    background-color: var(--background-color);
+    color: var(--text-color);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.navbar {
+    background-color: var(--primary-color) !important;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.navbar-brand, .nav-link {
+    color: var(--white) !important;
+    font-weight: 500;
+}
+
+.card {
+    border: none;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    transition: transform 0.2s;
+}
+
+.card:hover {
+    transform: translateY(-2px);
+}
+
+.card-header {
+    background-color: var(--primary-color) !important;
+    color: var(--white) !important;
+    border-bottom: none;
+}
+
+.btn-primary {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+}
+
+.btn-primary:hover {
+    background-color: #006666;
+    border-color: #006666;
+}
+
+.btn-success {
+    background-color: var(--secondary-color);
+    border-color: var(--secondary-color);
+    color: #fff;
+}
+
+.btn-success:hover {
+    background-color: #17a589;
+    border-color: #17a589;
+    color: #fff;
+}
+
+.jumbotron {
+    background-color: var(--white);
+    padding: 2rem;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+}
+
+/* Timeline Styles */
+.timeline {
+    border-left: 2px solid #e9ecef;
+    margin-left: 10px;
+    padding-left: 25px;
+    position: relative;
+}
+
+.timeline-item {
+    position: relative;
+    margin-bottom: 25px;
+}
+
+.timeline-marker {
+    position: absolute;
+    left: -33px; /* -25px padding - 8px (half width approx) */
+    top: 5px;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background-color: #fff;
+    border: 3px solid var(--secondary-color); /* Default color */
+    z-index: 1;
+}
+
+.timeline-item.completed .timeline-marker {
+    background-color: var(--secondary-color);
+    border-color: var(--secondary-color);
+}
+
+.timeline-item.rejected .timeline-marker {
+    border-color: #dc3545;
+}
+
+.timeline-content {
+    background: #fff;
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    border: 1px solid #f0f0f0;
+}

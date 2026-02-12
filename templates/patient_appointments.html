@@ -1,0 +1,173 @@
+{% extends "base.html" %}
+
+{% block title %}Appointments - Patient{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-12">
+        <h2>My Appointments</h2>
+        <hr>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-4">
+        <div class="card mb-4">
+            <div class="card-header bg-info text-white">
+                Book an Appointment
+            </div>
+            <div class="card-body">
+                <form method="POST" action="{{ url_for('book_appointment') }}">
+                    <div class="mb-3">
+                        <label for="doctor" class="form-label">Select Doctor</label>
+                        <select class="form-select" id="doctor" name="doctor_id" required onchange="updateSlots()">
+                            <option value="">Choose...</option>
+                            {% for doctor in doctors %}
+                            <option value="{{ doctor.id }}" data-slots="{{ doctor.available_slots or '' }}">Dr.
+                                {{ doctor.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="date" class="form-label">Date</label>
+                        <input type="date" class="form-control" id="date" name="date" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="time" class="form-label">Time Slot</label>
+                        <select class="form-select" id="time" name="time" required>
+                            <option value="">Select Doctor first</option>
+                        </select>
+                        <input type="text" class="form-control mt-2" id="time_manual" name="time_manual"
+                            style="display:none;" placeholder="Or type time manually">
+                    </div>
+                    <button type="submit" class="btn btn-primary w-100">Book Appointment</button>
+                </form>
+
+                <script>
+                    function updateSlots() {
+                        var doctorSelect = document.getElementById("doctor");
+                        var timeSelect = document.getElementById("time");
+                        var selectedOption = doctorSelect.options[doctorSelect.selectedIndex];
+                        var slotsStr = selectedOption.getAttribute("data-slots");
+
+                        timeSelect.innerHTML = ""; // Clear existing
+
+                        if (slotsStr && slotsStr.trim() !== "") {
+                            var slots = slotsStr.split(",");
+                            for (var i = 0; i < slots.length; i++) {
+                                var slot = slots[i].trim();
+                                var option = document.createElement("option");
+                                option.value = slot;
+                                option.text = slot;
+                                timeSelect.appendChild(option);
+                            }
+                        } else {
+                            // Fallback if no specific slots defined
+                            var option = document.createElement("option");
+                            option.value = "";
+                            option.text = "No specific slots defined. Type manually:"
+                            timeSelect.appendChild(option);
+
+                            // You might want to enable a manual input here if no slots are defined, 
+                            // but for this requirement we are emphasizing slots. 
+                            // Let's add standard business hours as fallback?
+                            // Or simplier: just show "09:00", "10:00"... "17:00" as defaults
+                            var defaults = ["09:00", "10:00", "11:00", "12:00", "14:00", "15:00", "16:00", "17:00"];
+                            for (var j = 0; j < defaults.length; j++) {
+                                var dSlot = defaults[j];
+                                var dOption = document.createElement("option");
+                                dOption.value = dSlot;
+                                dOption.text = dSlot;
+                                timeSelect.appendChild(dOption);
+                            }
+                        }
+                    }
+                </script>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header bg-secondary text-white">
+                Your Appointments
+            </div>
+            <div class="card-body">
+                <!-- Filter Form -->
+                <form method="GET" action="{{ url_for('appointments') }}" class="row g-3 mb-4">
+                    <div class="col-auto">
+                        <select name="status" class="form-select">
+                            <option value="">All Statuses</option>
+                            <option value="Pending" {% if request.args.get('status')=='Pending' %}selected{% endif %}>
+                                Pending</option>
+                            <option value="Approved" {% if request.args.get('status')=='Approved' %}selected{% endif %}>
+                                Approved</option>
+                            <option value="Rejected" {% if request.args.get('status')=='Rejected' %}selected{% endif %}>
+                                Rejected</option>
+                        </select>
+                    </div>
+                    <div class="col-auto">
+                        <input type="date" name="date" class="form-control"
+                            value="{{ request.args.get('date') or '' }}">
+                    </div>
+                    <div class="col-auto">
+                        <button type="submit" class="btn btn-secondary">Filter</button>
+                        <a href="{{ url_for('appointments') }}" class="btn btn-outline-secondary">Reset</a>
+                    </div>
+                </form>
+
+                {% if my_appointments %}
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Doctor</th>
+                            <th>Date</th>
+                            <th>Time</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for appointment in my_appointments %}
+                        <tr>
+                            <td>Dr. {{ appointment.doctor_name }}</td>
+                            <td>{{ appointment.date }}</td>
+                            <td>{{ appointment.time }}</td>
+                            <td>
+                                {% if appointment.status == 'Approved' %}
+                                <span class="badge bg-success">Approved</span>
+                                {% elif appointment.status == 'Completed' %}
+                                <span class="badge bg-primary">Completed</span>
+                                <div class="mt-2 small">
+                                    <strong>Diagnosis:</strong> {{ appointment.diagnosis }}<br>
+                                    <strong>Advice:</strong> {{ appointment.advice }}
+                                    {% if appointment.prescription %}
+                                    <div class="mt-2">
+                                        <a href="{{ url_for('static', filename='uploads/' + appointment.prescription) }}"
+                                            class="btn btn-sm btn-outline-primary" target="_blank">
+                                            <i class="bi bi-file-earmark-arrow-down"></i> Download Prescription
+                                        </a>
+                                    </div>
+                                    {% endif %}
+                                </div>
+                                {% elif appointment.status == 'Rejected' %}
+                                <span class="badge bg-danger">Rejected</span>
+                                {% if appointment.rejection_reason %}
+                                <div class="text-danger small mt-1">Reason: {{ appointment.rejection_reason }}
+                                </div>
+                                {% endif %}
+                                {% else %}
+                                <span class="badge bg-warning text-dark">Waiting for approval</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                {% else %}
+                <p>No appointments booked yet.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

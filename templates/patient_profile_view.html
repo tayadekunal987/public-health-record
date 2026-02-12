@@ -1,0 +1,101 @@
+{% extends "base.html" %}
+
+{% block title %}Patient Profile - {{ patient.name }}{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-12">
+        <a href="{{ url_for('appointments') }}" class="btn btn-outline-secondary mb-3">&larr; Back to Appointments</a>
+        <h2>Patient Profile: {{ patient.name }}</h2>
+        <hr>
+    </div>
+</div>
+
+<div class="row">
+    <!-- Patient Details Card -->
+    <div class="col-md-4">
+        <div class="card mb-4">
+            <div class="card-header bg-primary text-white">
+                Personal Information
+            </div>
+            <div class="card-body">
+                <p><strong>Email:</strong> {{ patient.email }}</p>
+                <p><strong>Age:</strong> {{ patient.age or 'N/A' }}</p>
+                <p><strong>Gender:</strong> {{ patient.gender or 'N/A' }}</p>
+                <p><strong>Blood Group:</strong> {{ patient.blood_group or 'N/A' }}</p>
+                <p><strong>Contact:</strong> {{ patient.contact_number or 'N/A' }}</p>
+                <p><strong>Address:</strong> {{ patient.address or 'N/A' }}</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Medical History / Past Appointments -->
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header bg-info text-white">
+                Medical Timeline
+            </div>
+            <div class="card-body">
+                {% if appointments %}
+                <div class="timeline">
+                    {% for appt in appointments %}
+                    <div
+                        class="timeline-item {{ 'completed' if appt.status == 'Completed' else '' }} {{ 'rejected' if appt.status == 'Rejected' else '' }}">
+                        <div class="timeline-marker"></div>
+                        <div class="timeline-content">
+                            <div class="d-flex justify-content-between align-items-center mb-1">
+                                <h6 class="mb-0 text-primary">{{ appt.date }} <small
+                                        class="text-muted fw-normal ms-2">{{ appt.time }}</small></h6>
+                                {% if appt.status == 'Completed' %}
+                                <span class="badge bg-success">Completed</span>
+                                {% elif appt.status == 'Approved' %}
+                                <span class="badge bg-primary">Approved</span>
+                                {% elif appt.status == 'Rejected' %}
+                                <span class="badge bg-danger">Rejected</span>
+                                {% else %}
+                                <span class="badge bg-warning text-dark">Pending</span>
+                                {% endif %}
+                            </div>
+                            <p class="mb-1 text-muted small">Consultation with Dr. {{ appt.doctor_name }}</p>
+
+                            {% if appt.symptoms %}
+                            <div class="mt-2 small">
+                                <strong>Symptoms:</strong> {{ appt.symptoms }}
+                            </div>
+                            {% endif %}
+
+                            {% if appt.diagnosis %}
+                            <div class="mt-1 small">
+                                <strong>Diagnosis:</strong> {{ appt.diagnosis }}
+                            </div>
+                            {% endif %}
+
+                            {% if appt.prescription %}
+                            <div class="mt-2">
+                                <a href="{{ url_for('static', filename='uploads/' + appt.prescription) }}"
+                                    class="btn btn-sm btn-outline-info" target="_blank">View Prescription</a>
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <p>No appointment history found.</p>
+                {% endif %}
+            </div>
+        </div>
+
+        {% if patient.medical_notes %}
+        <div class="card mt-4">
+            <div class="card-header bg-warning text-dark">
+                General Medical Notes
+            </div>
+            <div class="card-body">
+                <p>{{ patient.medical_notes }}</p>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

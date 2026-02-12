@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+
+{% block title %}My Profile - Public Health Record System{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-8 offset-md-2">
+        <div class="card">
+            <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                <h4 class="mb-0">My Profile</h4>
+                <a href="{{ url_for('edit_profile') }}" class="btn btn-light btn-sm">Edit Profile</a>
+            </div>
+            <div class="card-body">
+                <div class="row mb-3">
+                    <div class="col-sm-4 fw-bold">Full Name</div>
+                    <div class="col-sm-8">{{ current_user.name }}</div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-sm-4 fw-bold">Email</div>
+                    <div class="col-sm-8">{{ current_user.email }}</div>
+                </div>
+
+                {% if current_user.role == 'patient' %}
+                <hr>
+                <h5 class="mb-3 text-muted">Personal Details</h5>
+                <div class="row mb-3">
+                    <div class="col-sm-4 fw-bold">Age</div>
+                    <div class="col-sm-8">{{ current_user.age or 'Not set' }}</div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-sm-4 fw-bold">Gender</div>
+                    <div class="col-sm-8">{{ current_user.gender or 'Not set' }}</div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-sm-4 fw-bold">Blood Group</div>
+                    <div class="col-sm-8">{{ current_user.blood_group or 'Not set' }}</div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-sm-4 fw-bold">Contact Number</div>
+                    <div class="col-sm-8">{{ current_user.contact_number or 'Not set' }}</div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-sm-4 fw-bold">Address</div>
+                    <div class="col-sm-8">{{ current_user.address or 'Not set' }}</div>
+                </div>
+
+                <hr>
+                <h5 class="mb-3 text-muted">Medical Information</h5>
+                <div class="row mb-3">
+                    <div class="col-sm-4 fw-bold">Medical Notes</div>
+                    <div class="col-sm-8 text-secondary">
+                        {{ current_user.medical_notes or 'No medical notes available.' }}
+                    </div>
+                </div>
+
+                {% elif current_user.role == 'doctor' %}
+                <hr>
+                <h5 class="mb-3 text-muted">Professional Details</h5>
+                <div class="row mb-3">
+                    <div class="col-sm-4 fw-bold">Specialization</div>
+                    <div class="col-sm-8">{{ current_user.specialization or 'Not set' }}</div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-sm-4 fw-bold">Experience</div>
+                    <div class="col-sm-8">{{ current_user.experience_years }} Year(s)</div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-sm-4 fw-bold">Contact Number</div>
+                    <div class="col-sm-8">{{ current_user.contact_number or 'Not set' }}</div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-sm-4 fw-bold">Available Time</div>
+                    <div class="col-sm-8">{{ current_user.available_time or 'Not set' }}</div>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

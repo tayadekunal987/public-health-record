@@ -1,0 +1,69 @@
+import sqlite3
+import os
+
+DATABASE = 'instance/site.db'
+
+def init_db():
+    if not os.path.exists('instance'):
+        os.makedirs('instance')
+        
+    conn = sqlite3.connect(DATABASE)
+    cursor = conn.cursor()
+    
+    # Create User Table
+    cursor.execute('''
+        CREATE TABLE IF NOT EXISTS user (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            name TEXT NOT NULL,
+            email TEXT UNIQUE NOT NULL,
+            password TEXT NOT NULL,
+            role TEXT NOT NULL,
+            is_active BOOLEAN DEFAULT 1,
+            
+            -- Profile Fields
+            age INTEGER,
+            gender TEXT,
+            blood_group TEXT,
+            contact_number TEXT,
+            address TEXT,
+            medical_notes TEXT,
+            
+            -- Doctor Specific
+            specialization TEXT,
+            experience_years INTEGER,
+            available_time TEXT,
+            available_slots TEXT
+        )
+    ''')
+    
+    # Create Appointment Table
+    cursor.execute('''
+        CREATE TABLE IF NOT EXISTS appointment (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            patient_id INTEGER NOT NULL,
+            doctor_id INTEGER NOT NULL,
+            date TEXT NOT NULL,
+            time TEXT NOT NULL,
+            status TEXT DEFAULT 'Pending',
+            rejection_reason TEXT,
+            notification_msg TEXT,
+            notification_read BOOLEAN DEFAULT 0,
+            
+            -- Consultation Details
+            symptoms TEXT,
+            diagnosis TEXT,
+            advice TEXT,
+            prescription TEXT,
+            completed_at TIMESTAMP,
+            
+            FOREIGN KEY(patient_id) REFERENCES user(id),
+            FOREIGN KEY(doctor_id) REFERENCES user(id)
+        )
+    ''')
+    
+    conn.commit()
+    conn.close()
+    print("Database initialized successfully.")
+
+if __name__ == '__main__':
+    init_db()
