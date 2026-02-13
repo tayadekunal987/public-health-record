@@ -1,5 +1,6 @@
 import sqlite3
 import os
+from werkzeug.security import generate_password_hash
 
 DATABASE = 'instance/site.db'
 
