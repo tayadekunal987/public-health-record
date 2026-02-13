@@ -100,7 +100,7 @@
             </div>
 
             {% else %}
-            <a href="{{ url_for('view_patient_profile', patient_id=appointment.patient.id) }}"
+            <a href="{{ url_for('view_patient_profile', patient_id=appointment.patient_id) }}"
                 class="btn btn-sm btn-info text-white">View Profile</a>
             <button class="btn btn-sm btn-secondary" disabled>Processed</button>
             {% endif %}
@@ -116,6 +116,8 @@
     </div>
 </div>
 </div>
+
+{% endblock %}
 
 {% block modals %}
 <!-- Modals moved outside the card/table to avoid z-index/transform issues -->
@@ -196,6 +198,4 @@
 {% endif %}
 
 {% endfor %}
-{% endblock %}
-
 {% endblock %}

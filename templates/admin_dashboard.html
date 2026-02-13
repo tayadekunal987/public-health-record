@@ -11,27 +11,36 @@
 </div>
 
 <div class="row mb-4">
-    <div class="col-md-4">
-        <div class="card text-white bg-primary mb-3">
+    <div class="col-md-3">
+        <div class="card text-white bg-primary mb-3 h-100">
             <div class="card-header">Total Patients</div>
             <div class="card-body">
                 <h5 class="card-title display-4">{{ total_patients }}</h5>
             </div>
         </div>
     </div>
-    <div class="col-md-4">
-        <div class="card text-white bg-success mb-3">
+    <div class="col-md-3">
+        <div class="card text-white bg-success mb-3 h-100">
             <div class="card-header">Total Doctors</div>
             <div class="card-body">
                 <h5 class="card-title display-4">{{ total_doctors }}</h5>
             </div>
         </div>
     </div>
-    <div class="col-md-4">
-        <div class="card text-white bg-info mb-3">
+    <div class="col-md-3">
+        <div class="card text-white bg-info mb-3 h-100">
             <div class="card-header">Total Appointments</div>
             <div class="card-body">
                 <h5 class="card-title display-4">{{ total_appointments }}</h5>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-white bg-warning mb-3 h-100">
+            <div class="card-header">Unread Messages</div>
+            <div class="card-body">
+                <h5 class="card-title display-4">{{ unread_messages }}</h5>
+                <a href="{{ url_for('admin_messages') }}" class="btn btn-sm btn-light mt-2 stretched-link">View All</a>
             </div>
         </div>
     </div>
@@ -45,6 +54,8 @@
             </div>
             <div class="card-body">
                 <a href="{{ url_for('admin_users') }}" class="btn btn-primary">Manage Users</a>
+                <a href="{{ url_for('admin_announcements') }}" class="btn btn-warning text-white ms-2">Manage
+                    Announcements</a>
             </div>
         </div>
     </div>

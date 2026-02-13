@@ -1,0 +1,168 @@
+{% extends "base.html" %}
+
+{% block title %}Contact & Support - HealthRecord{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+
+    <!-- Hero Header -->
+    <div class="text-center mb-5 fade-in-up">
+        <h1 class="display-4 fw-bold text-primary mb-3">How can we help you?</h1>
+        <p class="lead text-muted">We are here to assist you 24/7. Choose the best way to connect with us.</p>
+    </div>
+
+    <!-- Emergency Section -->
+    <div id="emergency" class="card border-0 shadow-lg mb-5 overflow-hidden emergency-pulse">
+        <div class="card-body p-0">
+            <div class="row g-0">
+                <div class="col-md-1 bg-danger d-flex align-items-center justify-content-center text-white p-3">
+                    <i class="bi bi-exclamation-triangle-fill fs-1"></i>
+                </div>
+                <div class="col-md-11 p-4 bg-white">
+                    <h3 class="text-danger fw-bold mb-3">Emergency Contacts</h3>
+                    <p class="mb-4">If you or someone else is in immediate danger, please do not hesitate to call these
+                        numbers.</p>
+
+                    <div class="row g-3">
+                        <div class="col-md-4">
+                            <a href="tel:102"
+                                class="btn btn-outline-danger w-100 py-3 fw-bold d-flex align-items-center justify-content-center gap-2">
+                                <i class="bi bi-ambulance fs-4"></i> Ambulance (102)
+                            </a>
+                        </div>
+                        <div class="col-md-4">
+                            <a href="tel:100"
+                                class="btn btn-outline-danger w-100 py-3 fw-bold d-flex align-items-center justify-content-center gap-2">
+                                <i class="bi bi-shield-fill fs-4"></i> Police (100)
+                            </a>
+                        </div>
+                        <div class="col-md-4">
+                            <a href="tel:112"
+                                class="btn btn-danger w-100 py-3 fw-bold d-flex align-items-center justify-content-center gap-2 text-white shadow-sm">
+                                <i class="bi bi-telephone-fill fs-4"></i> General (112)
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-4">
+        <!-- Contact Info Cards -->
+        <div class="col-lg-4">
+            <div class="card h-100 border-0 shadow-sm">
+                <div class="card-body p-4">
+                    <h4 class="fw-bold mb-4">Get in Touch</h4>
+
+                    <div class="d-flex align-items-start mb-4">
+                        <div class="contact-icon-wrapper">
+                            <i class="bi bi-envelope-fill"></i>
+                        </div>
+                        <div>
+                            <h6 class="fw-bold mb-1">Email Support</h6>
+                            <p class="text-muted mb-0 small">Our team usually responds within 24 hours.</p>
+                            <a href="mailto:support@healthrecord.com"
+                                class="text-decoration-none fw-bold">support@healthrecord.com</a>
+                        </div>
+                    </div>
+
+                    <div class="d-flex align-items-start mb-4">
+                        <div class="contact-icon-wrapper">
+                            <i class="bi bi-telephone-fill"></i>
+                        </div>
+                        <div>
+                            <h6 class="fw-bold mb-1">Phone Support</h6>
+                            <p class="text-muted mb-0 small">Mon - Fri: 9:00 AM - 6:00 PM</p>
+                            <a href="tel:+18001234567" class="text-decoration-none fw-bold">+1 (800) 123-4567</a>
+                        </div>
+                    </div>
+
+                    <div class="d-flex align-items-start">
+                        <div class="contact-icon-wrapper">
+                            <i class="bi bi-geo-alt-fill"></i>
+                        </div>
+                        <div>
+                            <h6 class="fw-bold mb-1">Visit Us</h6>
+                            <p class="text-muted mb-0 small">
+                                123 Health Street,<br>
+                                Wellness City, HC 56789
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Contact Form -->
+        <div id="contact" class="col-lg-8">
+            <div class="card h-100 border-0 shadow-sm">
+                <div class="card-body p-4 p-lg-5">
+                    <h4 class="fw-bold mb-4">Send us a Message</h4>
+                    <form method="POST" action="{{ url_for('contact') }}">
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <div class="form-floating">
+                                    <input type="text" class="form-control" id="name" name="name"
+                                        placeholder="Your Name" required
+                                        value="{{ current_user.name if current_user.is_authenticated else '' }}">
+                                    <label for="name">Your Name</label>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-floating">
+                                    <input type="email" class="form-control" id="email" name="email"
+                                        placeholder="name@example.com" required
+                                        value="{{ current_user.email if current_user.is_authenticated else '' }}">
+                                    <label for="email">Email Address</label>
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <div class="form-floating">
+                                    <select class="form-select" id="subject" name="subject">
+                                        <option value="General Query">General Query</option>
+                                        <option value="Technical Support">Technical Support</option>
+                                        <option value="Feedback">Feedback</option>
+                                        <option value="Report Issue">Report Issue</option>
+                                    </select>
+                                    <label for="subject">Subject</label>
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <div class="form-floating">
+                                    <textarea class="form-control" id="message" name="message"
+                                        placeholder="Leave a message here" style="height: 150px" required></textarea>
+                                    <label for="message">Message</label>
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <button type="submit" class="btn btn-primary btn-lg px-5 w-100 w-md-auto">
+                                    <i class="bi bi-send-fill me-2"></i> Send Message
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .fade-in-up {
+        animation: fadeInUp 0.8s ease-out;
+    }
+
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+</style>
+{% endblock %}

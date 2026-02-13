@@ -1,0 +1,99 @@
+{% extends "base.html" %}
+
+{% block title %}Contact Messages - Admin{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-md-8">
+        <h2><i class="bi bi-envelope-open-fill text-primary"></i> Contact Messages</h2>
+    </div>
+    <div class="col-md-4 text-end">
+        <a href="{{ url_for('admin_dashboard') }}" class="btn btn-secondary">
+            <i class="bi bi-arrow-left"></i> Back to Dashboard
+        </a>
+    </div>
+</div>
+
+<div class="card shadow-sm">
+    <div class="card-body">
+        {% if messages %}
+        <div class="table-responsive">
+            <table class="table table-hover align-middle">
+                <thead class="table-light">
+                    <tr>
+                        <th>Date</th>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Subject</th>
+                        <th>Message</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for msg in messages %}
+                    <tr class="{{ 'table-light' if msg.is_read else 'fw-bold' }}">
+                        <td style="white-space: nowrap;">{{ msg.created_at[:10] }}</td>
+                        <td>{{ msg.name }}</td>
+                        <td><a href="mailto:{{ msg.email }}">{{ msg.email }}</a></td>
+                        <td>{{ msg.subject }}</td>
+                        <td>
+                            <button type="button" class="btn btn-sm btn-outline-primary" data-bs-toggle="modal"
+                                data-bs-target="#msgModal{{ msg.id }}">
+                                Read
+                            </button>
+                        </td>
+                        <td>
+                            {% if msg.is_read %}
+                            <span class="badge bg-secondary">Read</span>
+                            {% else %}
+                            <form action="{{ url_for('mark_message_read', message_id=msg.id) }}" method="POST"
+                                class="d-inline">
+                                <button type="submit" class="btn btn-sm btn-success">Mark Read</button>
+                            </form>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div class="text-center py-5 text-muted">
+            <i class="bi bi-inbox fs-1 d-block mb-3"></i>
+            <p>No messages found.</p>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+{% endblock %}
+
+{% block modals %}
+<!-- Modals for Full Message -->
+{% for msg in messages %}
+<div class="modal fade" id="msgModal{{ msg.id }}" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">{{ msg.subject }}</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p><strong>From:</strong> {{ msg.name }} ({{ msg.email }})</p>
+                <p><strong>Date:</strong> {{ msg.created_at }}</p>
+                <hr>
+                <p style="white-space: pre-wrap;">{{ msg.message }}</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                {% if not msg.is_read %}
+                <form action="{{ url_for('mark_message_read', message_id=msg.id) }}" method="POST">
+                    <button type="submit" class="btn btn-success">Mark as Read</button>
+                </form>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endfor %}
+{% endblock %}

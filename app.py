@@ -61,7 +61,7 @@ class User(UserMixin):
             return None
         return User(
             id=user['id'], name=user['name'], email=user['email'], password=user['password'],
-            role=user['role'], is_active=user['is_active'], age=user['age'], gender=user['gender'],
+            role=user['role'], is_active=bool(user['is_active']), age=user['age'], gender=user['gender'],
             blood_group=user['blood_group'], contact_number=user['contact_number'], address=user['address'],
             medical_notes=user['medical_notes'], specialization=user['specialization'],
             experience_years=user['experience_years'], available_time=user['available_time'],
@@ -76,7 +76,7 @@ class User(UserMixin):
             return None
         return User(
             id=user['id'], name=user['name'], email=user['email'], password=user['password'],
-            role=user['role'], is_active=user['is_active'], age=user['age'], gender=user['gender'],
+            role=user['role'], is_active=bool(user['is_active']), age=user['age'], gender=user['gender'],
             blood_group=user['blood_group'], contact_number=user['contact_number'], address=user['address'],
             medical_notes=user['medical_notes'], specialization=user['specialization'],
             experience_years=user['experience_years'], available_time=user['available_time'],
@@ -88,6 +88,25 @@ def load_user(user_id):
     return User.get(user_id)
 
 # Routes
+@app.route('/contact', methods=['GET', 'POST'])
+def contact():
+    if request.method == 'POST':
+        name = request.form.get('name')
+        email = request.form.get('email')
+        subject = request.form.get('subject')
+        message = request.form.get('message')
+        
+        db = get_db()
+        db.execute('INSERT INTO contact_message (name, email, subject, message) VALUES (?, ?, ?, ?)',
+                   (name, email, subject, message))
+        db.commit()
+        
+        # Flash a success message
+        flash(f'Thank you, {name}. Your message regarding "{subject}" has been received. We will contact you shortly.', 'success')
+        return redirect(url_for('contact'))
+        
+    return render_template('contact.html')
+
 @app.route('/')
 def home():
     return render_template('index.html')
@@ -160,11 +179,16 @@ def logout():
 @app.route('/dashboard')
 @login_required
 def dashboard():
+    if current_user.role == 'admin':
+        return redirect(url_for('admin_dashboard'))
+    
+    db = get_db()
+    announcements = db.execute('SELECT * FROM announcement ORDER BY created_at DESC LIMIT 3').fetchall()
+
     if current_user.role == 'doctor':
         from datetime import date
         today = date.today().strftime('%Y-%m-%d')
         
-        db = get_db()
         # Calculate Stats
         today_count = db.execute('SELECT COUNT(*) FROM appointment WHERE doctor_id = ? AND date = ?', (current_user.id, today)).fetchone()[0]
         pending_count = db.execute('SELECT COUNT(*) FROM appointment WHERE doctor_id = ? AND status = ?', (current_user.id, 'Pending')).fetchone()[0]
@@ -173,8 +197,10 @@ def dashboard():
         return render_template('doctor_dashboard.html', 
                              today_count=today_count, 
                              pending_count=pending_count, 
-                             completed_count=completed_count)
-    return render_template('patient_dashboard.html')
+                             completed_count=completed_count,
+                             announcements=announcements)
+    
+    return render_template('patient_dashboard.html', announcements=announcements)
 
 @app.route('/appointments')
 @login_required
@@ -452,11 +478,13 @@ def admin_dashboard():
     total_patients = db.execute("SELECT COUNT(*) FROM user WHERE role='patient'").fetchone()[0]
     total_doctors = db.execute("SELECT COUNT(*) FROM user WHERE role='doctor'").fetchone()[0]
     total_appointments = db.execute("SELECT COUNT(*) FROM appointment").fetchone()[0]
+    unread_messages = db.execute("SELECT COUNT(*) FROM contact_message WHERE is_read = 0").fetchone()[0]
     
     return render_template('admin_dashboard.html', 
                          total_patients=total_patients,
                          total_doctors=total_doctors,
-                         total_appointments=total_appointments)
+                         total_appointments=total_appointments,
+                         unread_messages=unread_messages)
 
 @app.route('/admin/users')
 @login_required
@@ -491,6 +519,64 @@ def toggle_user_status(user_id):
         flash(f'User {user["name"]} has been {status_msg}.', 'success')
         
     return redirect(url_for('admin_users'))
+
+@app.route('/admin/messages')
+@login_required
+def admin_messages():
+    if current_user.role != 'admin':
+        flash('Access denied. Admin only.', 'danger')
+        return redirect(url_for('dashboard'))
+    
+    db = get_db()
+    messages = db.execute('SELECT * FROM contact_message ORDER BY created_at DESC').fetchall()
+    return render_template('admin_messages.html', messages=messages)
+
+@app.route('/admin/messages/read/<int:message_id>', methods=['POST'])
+@login_required
+def mark_message_read(message_id):
+    if current_user.role != 'admin':
+        return redirect(url_for('dashboard'))
+    
+    db = get_db()
+    db.execute('UPDATE contact_message SET is_read = 1 WHERE id = ?', (message_id,))
+    db.commit()
+    flash('Message marked as read.', 'success')
+    return redirect(url_for('admin_messages'))
+
+# Announcement Routes
+@app.route('/admin/announcements', methods=['GET', 'POST'])
+@login_required
+def admin_announcements():
+    if current_user.role != 'admin':
+        flash('Access denied.', 'danger')
+        return redirect(url_for('dashboard'))
+        
+    db = get_db()
+    
+    if request.method == 'POST':
+        title = request.form.get('title')
+        content = request.form.get('content')
+        
+        db.execute('INSERT INTO announcement (title, content, created_by) VALUES (?, ?, ?)',
+                   (title, content, current_user.id))
+        db.commit()
+        flash('Announcement posted successfully!', 'success')
+        return redirect(url_for('admin_announcements'))
+        
+    announcements = db.execute('SELECT * FROM announcement ORDER BY created_at DESC').fetchall()
+    return render_template('admin_announcements.html', announcements=announcements)
+
+@app.route('/admin/announcements/delete/<int:id>', methods=['POST'])
+@login_required
+def delete_announcement(id):
+    if current_user.role != 'admin':
+        return redirect(url_for('dashboard'))
+        
+    db = get_db()
+    db.execute('DELETE FROM announcement WHERE id = ?', (id,))
+    db.commit()
+    flash('Announcement deleted.', 'success')
+    return redirect(url_for('admin_announcements'))
 
 if __name__ == '__main__':
     # Ensure init_db or similar if needed, but we assume DB exists

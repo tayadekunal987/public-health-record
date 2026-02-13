@@ -4,8 +4,27 @@
 
 {% block content %}
 <div class="row mb-4">
+    <div class="col-md-12">
+        <h2>Doctor Dashboard - Access for Dr. {{ current_user.name }}</h2>
+        <hr>
+    </div>
+</div>
+
+<div class="row mb-4">
+    <div class="col-md-12">
+        <div class="card text-center shadow-sm">
+            <div class="card-body">
+                <h5 class="card-title">Manage Patient Appointments</h5>
+                <p class="card-text">View and manage upcoming appointments with patients.</p>
+                <a href="{{ url_for('appointments') }}" class="btn btn-primary btn-lg">Go to Appointments</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mb-4">
     <div class="col-md-4">
-        <div class="card text-white bg-info mb-3">
+        <div class="card text-white bg-info mb-3 h-100">
             <div class="card-header">Today's Appointments</div>
             <div class="card-body">
                 <h5 class="card-title display-4">{{ today_count }}</h5>
@@ -13,7 +32,7 @@
         </div>
     </div>
     <div class="col-md-4">
-        <div class="card text-white bg-warning mb-3">
+        <div class="card text-white bg-warning mb-3 h-100">
             <div class="card-header">Pending Requests</div>
             <div class="card-body">
                 <h5 class="card-title display-4">{{ pending_count }}</h5>
@@ -21,7 +40,7 @@
         </div>
     </div>
     <div class="col-md-4">
-        <div class="card text-white bg-success mb-3">
+        <div class="card text-white bg-success mb-3 h-100">
             <div class="card-header">Completed Consultations</div>
             <div class="card-body">
                 <h5 class="card-title display-4">{{ completed_count }}</h5>
@@ -30,22 +49,24 @@
     </div>
 </div>
 
-<div class="row">
+{% if announcements %}
+<div class="row mb-4">
     <div class="col-md-12">
-        <h2>Doctor Dashboard - Access for Dr. {{ current_user.name }}</h2>
-        <hr>
-    </div>
-</div>
-
-<div class="row">
-    <div class="col-md-12">
-        <div class="card text-center">
+        <div class="card border-info shadow-sm">
+            <div class="card-header bg-info text-white">
+                <h5 class="mb-0"><i class="bi bi-info-circle-fill"></i> System Announcements</h5>
+            </div>
             <div class="card-body">
-                <h5 class="card-title">Manage Patient Appointments</h5>
-                <p class="card-text">View and manage upcoming appointments with patients.</p>
-                <a href="{{ url_for('appointments') }}" class="btn btn-primary">Go to Appointments</a>
+                {% for announcement in announcements %}
+                <div class="alert alert-light border-start border-4 border-info">
+                    <h6 class="alert-heading fw-bold">{{ announcement.title }} <small
+                            class="text-muted fw-normal ms-2">{{ announcement.created_at[:10] }}</small></h6>
+                    <p class="mb-0">{{ announcement.content }}</p>
+                </div>
+                {% endfor %}
             </div>
         </div>
     </div>
 </div>
+{% endif %}
 {% endblock %}

@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+
+{% block title %}Manage Announcements - Admin{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-md-8">
+        <h2><i class="bi bi-megaphone-fill text-warning"></i> Health Tips & Announcements</h2>
+    </div>
+    <div class="col-md-4 text-end">
+        <a href="{{ url_for('admin_dashboard') }}" class="btn btn-secondary">
+            <i class="bi bi-arrow-left"></i> Back to Dashboard
+        </a>
+    </div>
+</div>
+
+<div class="row">
+    <!-- Form to Add Announcement -->
+    <div class="col-md-4 mb-4">
+        <div class="card shadow-sm">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0">Post New Announcement</h5>
+            </div>
+            <div class="card-body">
+                <form method="POST">
+                    <div class="mb-3">
+                        <label for="title" class="form-label">Title</label>
+                        <input type="text" class="form-control" id="title" name="title" required
+                            placeholder="e.g., Flu Season Alert">
+                    </div>
+                    <div class="mb-3">
+                        <label for="content" class="form-label">Content</label>
+                        <textarea class="form-control" id="content" name="content" rows="4" required
+                            placeholder="Enter the announcement details..."></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary w-100">Post Announcement</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- List of Announcements -->
+    <div class="col-md-8">
+        <div class="card shadow-sm">
+            <div class="card-header bg-light">
+                <h5 class="mb-0">Active Announcements</h5>
+            </div>
+            <div class="card-body">
+                {% if announcements %}
+                {% for announcement in announcements %}
+                <div class="card mb-3 border-start border-4 border-warning">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-start">
+                            <h5 class="card-title text-primary">{{ announcement.title }}</h5>
+                            <form action="{{ url_for('delete_announcement', id=announcement.id) }}" method="POST"
+                                onsubmit="return confirm('Are you sure?');">
+                                <button type="submit" class="btn btn-sm btn-outline-danger" title="Delete"><i
+                                        class="bi bi-trash"></i></button>
+                            </form>
+                        </div>
+                        <h6 class="card-subtitle mb-2 text-muted small">{{ announcement.created_at }}</h6>
+                        <p class="card-text">{{ announcement.content }}</p>
+                    </div>
+                </div>
+                {% endfor %}
+                {% else %}
+                <div class="text-center py-4 text-muted">
+                    <p>No active announcements.</p>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

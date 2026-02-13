@@ -1,10 +1,20 @@
+html {
+    scroll-behavior: smooth;
+}
+
 :root {
-    --primary-color: #008080; /* Teal */
-    --secondary-color: #20c997; /* Light Teal */
-    --accent-color: #0d6efd; /* Bootstrap Blue */
-    --background-color: #f0f8ff; /* AliceBlue */
+    --primary-color: #008080;
+    /* Teal */
+    --secondary-color: #20c997;
+    /* Light Teal */
+    --accent-color: #0d6efd;
+    /* Bootstrap Blue */
+    --background-color: #f0f8ff;
+    /* AliceBlue */
     --text-color: #333;
     --white: #ffffff;
+    --danger-color: #dc3545;
+    --dark-overlay: rgba(0, 0, 0, 0.05);
 }
 
 body {
@@ -15,28 +25,48 @@ body {
 
 .navbar {
     background-color: var(--primary-color) !important;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
-.navbar-brand, .nav-link {
+.navbar-brand,
+.nav-link {
     color: var(--white) !important;
     font-weight: 500;
+    transition: opacity 0.2s;
 }
 
+.nav-link:hover {
+    opacity: 0.8;
+}
+
+/* Card Styles & Animations */
 .card {
     border: none;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-    transition: transform 0.2s;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+    transition: all 0.3s ease;
+    background: white;
 }
 
 .card:hover {
-    transform: translateY(-2px);
+    transform: translateY(-5px);
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.1);
 }
 
 .card-header {
     background-color: var(--primary-color) !important;
     color: var(--white) !important;
     border-bottom: none;
+    border-radius: 12px 12px 0 0 !important;
+    padding: 1rem 1.5rem;
+}
+
+/* Buttons */
+.btn {
+    border-radius: 8px;
+    padding: 0.6rem 1.2rem;
+    font-weight: 500;
+    transition: all 0.3s ease;
 }
 
 .btn-primary {
@@ -47,25 +77,82 @@ body {
 .btn-primary:hover {
     background-color: #006666;
     border-color: #006666;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 128, 128, 0.3);
 }
 
-.btn-success {
-    background-color: var(--secondary-color);
-    border-color: var(--secondary-color);
-    color: #fff;
+.btn-danger {
+    background-color: var(--danger-color);
+    border-color: var(--danger-color);
 }
 
-.btn-success:hover {
-    background-color: #17a589;
-    border-color: #17a589;
-    color: #fff;
+.btn-danger:hover {
+    background-color: #bb2d3b;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(220, 53, 69, 0.4);
+}
+
+/* Emergency Section Styles */
+.emergency-card {
+    border-left: 5px solid var(--danger-color);
+    background: white;
+    position: relative;
+    overflow: hidden;
+}
+
+.emergency-pulse {
+    animation: pulse-red 2s infinite;
+}
+
+@keyframes pulse-red {
+    0% {
+        box-shadow: 0 0 0 0 rgba(220, 53, 69, 0.4);
+    }
+
+    70% {
+        box-shadow: 0 0 0 10px rgba(220, 53, 69, 0);
+    }
+
+    100% {
+        box-shadow: 0 0 0 0 rgba(220, 53, 69, 0);
+    }
+}
+
+.contact-icon-wrapper {
+    width: 50px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background-color: rgba(0, 128, 128, 0.1);
+    color: var(--primary-color);
+    margin-right: 15px;
+    font-size: 1.2rem;
+}
+
+/* Form Styles */
+.form-control,
+.form-select {
+    border-radius: 8px;
+    padding: 0.75rem 1rem;
+    border: 1px solid #dee2e6;
+    background-color: #f8f9fa;
+    transition: all 0.2s;
+}
+
+.form-control:focus,
+.form-select:focus {
+    background-color: white;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 4px rgba(0, 128, 128, 0.1);
 }
 
 .jumbotron {
     background-color: var(--white);
     padding: 2rem;
-    border-radius: 10px;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
 }
 
 /* Timeline Styles */
@@ -83,13 +170,13 @@ body {
 
 .timeline-marker {
     position: absolute;
-    left: -33px; /* -25px padding - 8px (half width approx) */
+    left: -33px;
     top: 5px;
     width: 16px;
     height: 16px;
     border-radius: 50%;
     background-color: #fff;
-    border: 3px solid var(--secondary-color); /* Default color */
+    border: 3px solid var(--secondary-color);
     z-index: 1;
 }
 
@@ -106,6 +193,6 @@ body {
     background: #fff;
     padding: 15px;
     border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
     border: 1px solid #f0f0f0;
 }
