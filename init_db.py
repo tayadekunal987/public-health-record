@@ -60,6 +60,31 @@ def init_db():
             FOREIGN KEY(doctor_id) REFERENCES user(id)
         )
     ''')
+
+    # Create Contact Message Table
+    cursor.execute('''
+        CREATE TABLE IF NOT EXISTS contact_message (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            name TEXT NOT NULL,
+            email TEXT NOT NULL,
+            subject TEXT NOT NULL,
+            message TEXT NOT NULL,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            is_read BOOLEAN DEFAULT 0
+        )
+    ''')
+
+    # Create Announcement Table
+    cursor.execute('''
+        CREATE TABLE IF NOT EXISTS announcement (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            title TEXT NOT NULL,
+            content TEXT NOT NULL,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            created_by INTEGER,
+            FOREIGN KEY (created_by) REFERENCES user (id)
+        )
+    ''')
     
     conn.commit()
     conn.close()
