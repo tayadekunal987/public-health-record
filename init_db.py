@@ -87,6 +87,17 @@ def init_db():
         )
     ''')
     
+    
+    # Create Default Admin if not exists
+    cursor.execute("SELECT * FROM user WHERE role = 'admin'")
+    if not cursor.fetchone():
+        hashed_pw = generate_password_hash('admin123', method='scrypt')
+        cursor.execute('''
+            INSERT INTO user (name, email, password, role, is_active)
+            VALUES (?, ?, ?, ?, ?)
+        ''', ('Super Admin', 'admin@example.com', hashed_pw, 'admin', 1))
+        print("Default Admin created: admin@example.com / admin123")
+
     conn.commit()
     conn.close()
     print("Database initialized successfully.")
